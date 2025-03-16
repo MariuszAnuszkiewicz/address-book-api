@@ -17,6 +17,14 @@ class DB {
             $this->pdo = new PDO($dsn, getenv('DATABASE_USER'), getenv('DATABASE_PASSWORD'));
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch(PDOException $e) {
+           if ($e->getCode() === 2006) {
+               ob_start();
+               echo 'Please wait several seconds to load database.';
+               ob_flush();
+               flush();
+               sleep(15);
+               Router::redirect('/api/user');
+            }
             echo 'Failed to connect to Database: ' . $e->getMessage();
             exit;
         }

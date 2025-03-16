@@ -71,8 +71,15 @@ class Router {
 
     public static function redirect(string $location)
     {
-        header("Location: $location");
-        exit;
+        if (!headers_sent()) {
+            header('Location: ' . $location);
+        } else {
+            $build = '<script>';
+            $build .= 'window.location.href="'.$location.'";';
+            $build .= '</script>';
+
+            echo $build;
+        }
     }
 
     public function guardParams()
